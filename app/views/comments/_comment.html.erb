@@ -1,0 +1,28 @@
+
+<% @article.comments.where(parent_id: nil).each do |comment| %>
+  <div>
+    <p><strong>Commenter:</strong> <%= comment.commenter %></p>
+    <p><strong>Comment:</strong> <%= comment.body %></p>
+
+    <div>
+      <p><strong>Reply to this comment:</strong></p>
+      <%= form_with(model: [@article, Comment.new], local: true) do |form| %>
+        <%= form.hidden_field :parent_id, value: comment.id %>
+        <%= form.text_field :commenter, placeholder: "Your name" %><br>
+        <%= form.text_area :body, placeholder: "Your reply" %><br>
+        <%= form.select :status, ['public', 'private'] %><br>
+        <%= form.submit "Post Reply" %>
+      <% end %>
+    </div>
+
+
+
+    <p>
+      <%= link_to "Destroy Comment", [comment.article, comment], data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %>
+    </p>
+    <hr>
+  </div>
+<% end %>
